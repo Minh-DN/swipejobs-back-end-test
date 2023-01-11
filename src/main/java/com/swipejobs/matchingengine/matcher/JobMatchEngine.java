@@ -7,13 +7,9 @@ import com.swipejobs.matchingengine.util.JobMatchEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,28 +22,32 @@ public class JobMatchEngine {
 
     /**
      * Matches jobs to a worker by filtering the available jobs by:
-     *      1. Driver License Requirement
-     *      2. Location (find jobs within worker's maximum distance)
-     *      3. Certificates Requirements
+     * 1. Driver License Requirement
+     * 2. Location (find jobs within worker's maximum distance)
+     * 3. Certificates Requirements
      *
-     * @param worker worker to find matching jobs for
+     * @param worker  worker to find matching jobs for
      * @param jobList list of available jobs (from Jobs endpoint)
      * @return A list of matching jobs
      */
     public List<Job> getMatchingJobs(Worker worker, List<Job> jobList) {
 
-        List<Job> matchedJobs = new ArrayList<Job>();
+        LOGGER.info("Number of available jobs: {}", jobList.size());
 
+        List<Job> matchedJobs;
         // Step 1 - filter by driver license requirement
         matchedJobs = jobList.stream()
                 .filter(job -> filterByDriverLicense(job, worker))
                 .collect(Collectors.toList());
+        LOGGER.info("Number of jobs after filtering by driver license requirement: {}", matchedJobs.size());
 
         // Step 2 - filter by location
         matchedJobs = filterByLocation(matchedJobs, worker);
+        LOGGER.info("Number of jobs after filtering by location: {}", matchedJobs.size());
 
         // Step 3 - filter by certificate requirements
         matchedJobs = filterByCertificate(matchedJobs, worker);
+        LOGGER.info("Number of jobs after filtering by certificate requirements: {}", matchedJobs.size());
 
         // TODO: implement a check to add a warning if job's start date
         //  does not match with worker's availability
@@ -62,7 +62,7 @@ public class JobMatchEngine {
 
     private boolean filterByDriverLicense(Job job, Worker worker) {
         if (!job.isDriverLicenseRequired()) {
-            return false;
+            return true;
         } else {
             return job.isDriverLicenseRequired() == worker.getHasDriversLicense();
         }

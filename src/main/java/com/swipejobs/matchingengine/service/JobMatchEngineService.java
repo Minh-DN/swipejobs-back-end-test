@@ -1,6 +1,5 @@
 package com.swipejobs.matchingengine.service;
 
-import com.swipejobs.matchingengine.config.Configuration;
 import com.swipejobs.matchingengine.matcher.JobMatchEngine;
 import com.swipejobs.matchingengine.model.Job;
 import com.swipejobs.matchingengine.model.Worker;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class JobMatchEngineService {
@@ -37,7 +34,7 @@ public class JobMatchEngineService {
 
         List<Worker> workerList = workerGetService.getWorkers();
         List<Job> jobList = jobGetService.getJobs();
-        List<Job> matchedJobs = new ArrayList<Job>();
+        List<Job> matchedJobs = new ArrayList<>();
 
         try {
             Worker worker = workerList.stream()

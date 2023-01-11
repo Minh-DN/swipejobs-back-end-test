@@ -10,6 +10,9 @@ public class JobSearchAddress {
     private String longitude;
     private String latitude;
 
+    public JobSearchAddress() {
+    }
+
     public JobSearchAddress(String unit, int maxJobDistance, String longitude, String latitude) {
         this.unit = unit;
         this.maxJobDistance = maxJobDistance;
@@ -31,5 +34,15 @@ public class JobSearchAddress {
 
     public String getLatitude() {
         return latitude;
+    }
+
+    @Override
+    public String toString() {
+        return "JobSearchAddress{" +
+                "unit='" + unit + '\'' +
+                ", maxJobDistance=" + maxJobDistance +
+                ", longitude='" + longitude + '\'' +
+                ", latitude='" + latitude + '\'' +
+                '}';
     }
 }

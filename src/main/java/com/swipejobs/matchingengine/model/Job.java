@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Job {
 
@@ -18,6 +19,23 @@ public class Job {
     private String company;
     private String guid;
     private int jobId;
+
+    public Job() {
+    }
+
+    public Job(boolean driverLicenseRequired, List<String> requiredCertificates, Location location, String billRate, int workersRequired, Date startDate, String about, String jobTitle, String company, String guid, int jobId) {
+        this.driverLicenseRequired = driverLicenseRequired;
+        this.requiredCertificates = requiredCertificates;
+        this.location = location;
+        this.billRate = billRate;
+        this.workersRequired = workersRequired;
+        this.startDate = startDate;
+        this.about = about;
+        this.jobTitle = jobTitle;
+        this.company = company;
+        this.guid = guid;
+        this.jobId = jobId;
+    }
 
     public boolean isDriverLicenseRequired() {
         return driverLicenseRequired;
@@ -61,5 +79,22 @@ public class Job {
 
     public int getJobId() {
         return jobId;
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "driverLicenseRequired=" + driverLicenseRequired +
+                ", requiredCertificates=" + requiredCertificates +
+                ", location=" + location +
+                ", billRate='" + billRate + '\'' +
+                ", workersRequired=" + workersRequired +
+                ", startDate=" + startDate +
+                ", about='" + about + '\'' +
+                ", jobTitle='" + jobTitle + '\'' +
+                ", company='" + company + '\'' +
+                ", guid='" + guid + '\'' +
+                ", jobId=" + jobId +
+                '}';
     }
 }

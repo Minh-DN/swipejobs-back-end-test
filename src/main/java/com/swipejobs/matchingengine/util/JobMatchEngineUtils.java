@@ -1,7 +1,10 @@
 package com.swipejobs.matchingengine.util;
 
+import com.swipejobs.matchingengine.matcher.JobMatchEngine;
 import com.swipejobs.matchingengine.model.Job;
 import com.swipejobs.matchingengine.model.Worker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
@@ -25,6 +28,8 @@ public class JobMatchEngineUtils {
                                String latitude2, String longitude2) {
 
         final int R = 6371; // Radius of the Earth (km)
+        final int HEIGHT = 0; // Haversine method includes height difference
+        // We are not interested in height difference
 
         // Convert co-ordinates to double
         double lat1 = Double.parseDouble(latitude1);
@@ -51,7 +56,7 @@ public class JobMatchEngineUtils {
 
         // job's location
         String jobLat = job.getLocation().getLatitude();
-        String jobLong = job.getLocation().getLatitude();
+        String jobLong = job.getLocation().getLongitude();
 
         double distance = calcDistance(workerLat, workerLong, jobLat, jobLong);
         // worker's max distance from job search address

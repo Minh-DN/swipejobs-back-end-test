@@ -5,11 +5,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Configuration {
-
     @Value("${workersResourceUrl:https://test.swipejobs.com/api/workers}")
     private String workersResourceUrl;
 
-    @Value("{jobsResourceUrl:https://test.swipejobs.com/api/jobs}")
+    @Value("${jobsResourceUrl:https://test.swipejobs.com/api/jobs}")
     private String jobsResourceUrl;
 
     @Value("${maxJobMatches:3}")

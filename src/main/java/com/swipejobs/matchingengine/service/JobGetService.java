@@ -19,7 +19,7 @@ public class JobGetService {
     public static final Logger LOGGER = LoggerFactory.getLogger(JobGetService.class);
     @Autowired
     private Configuration configs;
-    private RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public List<Job> getJobs() {
         try {
@@ -32,8 +32,8 @@ public class JobGetService {
                 LOGGER.error("Unsuccessful response from Jobs endpoint. Status Code: {}", jobResponse.getStatusCode());
                 return null;
             }
-            List<Job> jobList = Arrays.asList(jobResponse.getBody());
-            return jobList;
+            return Arrays.asList(jobResponse.getBody());
+
         } catch (Exception e) {
             LOGGER.error("Exception caught while trying to get response from Jobs endpoint", e);
             return null;
