@@ -27,7 +27,7 @@ public class JobMatchEngineController {
      * @return List of matching jobs
      */
     @RequestMapping(value = "/matching-engine/{workerId}", method = RequestMethod.GET)
-    public List<Job> getMatchedJobs(@PathVariable int workerId) {
+    public List<Job> getMatchedJobs(@PathVariable String workerId) {
         try {
             LOGGER.info("Received job matching request for workerId = {}", workerId);
             return jobMatchEngineService.getMatchedJobs(workerId);
@@ -35,8 +35,5 @@ public class JobMatchEngineController {
             LOGGER.error("Exception caught while trying to use the Match Engine", e);
             return new ArrayList<>();
         }
-
     }
-
-
 }

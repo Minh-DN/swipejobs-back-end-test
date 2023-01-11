@@ -27,10 +27,18 @@ public class JobMatchEngineService {
     /**
      * Use {@link com.swipejobs.matchingengine.matcher.JobMatchEngine} to find matching jobs
      *
-     * @param workerId
+     * @param _workerId
      * @return A list of matching jobs
      */
-    public List<Job> getMatchedJobs(int workerId) {
+    public List<Job> getMatchedJobs(String _workerId) {
+
+        int workerId;
+        try {
+            workerId = Integer.parseInt(_workerId);
+        } catch (NumberFormatException e) {
+            LOGGER.error("Invalid workerId received: {}", _workerId);
+            return new ArrayList<>();
+        }
 
         List<Worker> workerList = workerGetService.getWorkers();
         List<Job> jobList = jobGetService.getJobs();
