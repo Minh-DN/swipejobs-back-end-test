@@ -4,8 +4,6 @@ import com.swipejobs.matchingengine.config.Configuration;
 import com.swipejobs.matchingengine.model.Job;
 import com.swipejobs.matchingengine.model.Worker;
 import com.swipejobs.matchingengine.util.JobMatchEngineUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +12,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class JobMatchEngine {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JobMatchEngine.class);
     @Autowired
     private Configuration configs;
     @Autowired
@@ -32,22 +29,13 @@ public class JobMatchEngine {
      */
     public List<Job> getMatchingJobs(Worker worker, List<Job> jobList) {
 
-        LOGGER.info("Number of available jobs: {}", jobList.size());
-
         List<Job> matchedJobs;
-        // Step 1 - filter by driver license requirement
+
         matchedJobs = jobList.stream()
-                .filter(job -> filterByDriverLicense(job, worker))
+                .filter(job -> utils.filterByDriverLicense(job, worker)) // Step 1 - filter by driver license requirement
+                .filter(job -> utils.compareDistance(job, worker)) // Step 2 - filter by location
+                .filter(job -> utils.filterByCertificates(job, worker)) // Step 3 - filter by certificate requirements
                 .collect(Collectors.toList());
-        LOGGER.info("Number of jobs after filtering by driver license requirement: {}", matchedJobs.size());
-
-        // Step 2 - filter by location
-        matchedJobs = filterByLocation(matchedJobs, worker);
-        LOGGER.info("Number of jobs after filtering by location: {}", matchedJobs.size());
-
-        // Step 3 - filter by certificate requirements
-        matchedJobs = filterByCertificate(matchedJobs, worker);
-        LOGGER.info("Number of jobs after filtering by certificate requirements: {}", matchedJobs.size());
 
         // TODO: implement a check to add a warning if job's start date
         //  does not match with worker's availability
@@ -58,28 +46,6 @@ public class JobMatchEngine {
         }
 
         return matchedJobs;
-    }
-
-    private boolean filterByDriverLicense(Job job, Worker worker) {
-        if (!job.isDriverLicenseRequired()) {
-            return true;
-        } else {
-            return job.isDriverLicenseRequired() == worker.getHasDriversLicense();
-        }
-    }
-
-    private List<Job> filterByLocation(List<Job> jobList, Worker worker) {
-        jobList = jobList.stream()
-                .filter(job -> utils.compareDistance(job, worker))
-                .collect(Collectors.toList());
-        return jobList;
-    }
-
-    private List<Job> filterByCertificate(List<Job> jobList, Worker worker) {
-        jobList = jobList.stream()
-                .filter(job -> utils.filterByCertificates(job, worker))
-                .collect(Collectors.toList());
-        return jobList;
     }
 
 }
