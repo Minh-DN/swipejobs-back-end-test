@@ -4,7 +4,7 @@ A simple matching engine that presents Workers with appropriate jobs
 
 ## SDK
 ```
-corretto-17 Amazon Corretto version 17.0.5
+corretto-17 | Amazon Corretto version 17.0.5
 ```
 
 ## Matching Engine's Algorithm
