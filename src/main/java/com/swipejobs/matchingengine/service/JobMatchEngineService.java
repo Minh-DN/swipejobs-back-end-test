@@ -1,8 +1,11 @@
 package com.swipejobs.matchingengine.service;
 
+import com.swipejobs.matchingengine.dto.JobDto;
+import com.swipejobs.matchingengine.mapper.JobMapper;
 import com.swipejobs.matchingengine.matcher.JobMatchEngine;
 import com.swipejobs.matchingengine.model.Job;
 import com.swipejobs.matchingengine.model.Worker;
+import com.swipejobs.matchingengine.util.JobMatchEngineUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Component
 public class JobMatchEngineService {
@@ -22,7 +24,11 @@ public class JobMatchEngineService {
     @Autowired
     private WorkerGetService workerGetService;
     @Autowired
-    JobMatchEngine jobMatchEngine;
+    private JobMatchEngineUtils utils;
+    @Autowired
+    private JobMatchEngine jobMatchEngine;
+    @Autowired
+    private JobMapper jobMapper;
 
     /**
      * Use {@link com.swipejobs.matchingengine.matcher.JobMatchEngine} to find matching jobs
@@ -30,33 +36,36 @@ public class JobMatchEngineService {
      * @param _workerId
      * @return A list of matching jobs
      */
-    public List<Job> getMatchedJobs(String _workerId) {
+    public List<JobDto> getMatchedJobs(String _workerId) {
 
-        int workerId;
-        try {
-            workerId = Integer.parseInt(_workerId);
-        } catch (NumberFormatException e) {
+        if (!utils.isNumeric(_workerId)) {
             LOGGER.error("Invalid workerId received: {}", _workerId);
             return new ArrayList<>();
         }
 
+        int workerId = Integer.parseInt(_workerId);
+
         List<Worker> workerList = workerGetService.getWorkers();
         List<Job> jobList = jobGetService.getJobs();
-        List<Job> matchedJobs = new ArrayList<>();
+        List<Job> matchedJobs;
 
-        try {
-            Worker worker = workerList.stream()
-                    .filter(_worker -> _worker.getUserId() == workerId)
-                    .findFirst()
-                    .get();
 
-            matchedJobs = jobMatchEngine.getMatchingJobs(worker, jobList);
-            return matchedJobs;
+        Worker worker = workerList.stream()
+                .filter(_worker -> _worker.getUserId() == workerId)
+                .findFirst()
+                .orElse(null);
 
-        } catch (NoSuchElementException e) {
+        if (worker == null) {
             LOGGER.error("Unable to find Worker with userId {} in the system", workerId);
-            return matchedJobs;
+            return new ArrayList<>();
         }
+
+        matchedJobs = jobMatchEngine.getMatchingJobs(worker, jobList);
+        List<JobDto> matchedJobsDto = matchedJobs.stream()
+                .map(e -> jobMapper.toDto(e))
+                .toList();
+
+        return matchedJobsDto;
     }
 
 }

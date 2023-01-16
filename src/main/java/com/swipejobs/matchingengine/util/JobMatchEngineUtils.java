@@ -64,12 +64,7 @@ public class JobMatchEngineUtils {
         List<String> requiredCerts = job.getRequiredCertificates();
         Set<String> workerCerts = worker.getCertificates();
 
-        for (String requiredCert : requiredCerts) {
-            if (!workerCerts.contains(requiredCert)) {
-                return false;
-            }
-        }
-        return true;
+        return workerCerts.containsAll(requiredCerts);
     }
 
     public boolean filterByDriverLicense(Job job, Worker worker) {
@@ -96,5 +91,14 @@ public class JobMatchEngineUtils {
 
         // return closest 3 jobs
         return jobList.stream().limit(3).collect(Collectors.toList());
+    }
+
+    public boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 }
