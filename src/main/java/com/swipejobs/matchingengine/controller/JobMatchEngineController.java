@@ -1,6 +1,6 @@
 package com.swipejobs.matchingengine.controller;
 
-import com.swipejobs.matchingengine.model.Job;
+import com.swipejobs.matchingengine.dto.JobDto;
 import com.swipejobs.matchingengine.service.JobMatchEngineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class JobMatchEngineController {
      * @return List of matching jobs
      */
     @RequestMapping(value = "/matching-engine/{workerId}", method = RequestMethod.GET)
-    public List<Job> getMatchedJobs(@PathVariable String workerId) {
+    public List<JobDto> getMatchedJobs(@PathVariable String workerId) {
         try {
             LOGGER.info("Received job matching request for workerId = {}", workerId);
             return jobMatchEngineService.getMatchedJobs(workerId);
